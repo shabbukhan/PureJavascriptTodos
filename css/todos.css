@@ -1,0 +1,157 @@
+body {
+    font-size: 120%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+form {
+    width: 50%;
+    margin: auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+}
+
+legend {
+    float: left;
+    width: 25%;
+}
+
+abbr[title] {
+    text-decoration: none;
+    color: red
+}
+
+select,
+input[type='text'],
+input[type='password'] {
+    width: 50%;
+    height: 30px;
+}
+
+label[for='username'],
+label[for='password'],
+label[for='confirmpassword'],
+label[for='experience'] {
+    width: 25%;
+    display: inline-block;
+}
+
+.form-group span {
+    height: 20px;
+    display: block;
+    margin: 10px 0 10px 26%;
+}
+
+.show-error {
+    color: red;
+    margin-left: 26%;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+#success {
+    color: green;
+    font-size: 150%;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.btn {
+    background: green;
+    color: #fff;
+    padding: 7px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+main {
+    background: #dedede;
+    padding: 10px;
+}
+
+#userContainer {
+    padding: 0;
+}
+
+#userContainer li {
+    background: #729fcf;
+    list-style: none;
+    color: #fff;
+    border-bottom: 1px solid #5e88ba;
+}
+
+#userContainer li a {
+    color: #000;
+    text-decoration: none;
+    line-height: 43px;
+    border-right: 1px solid #5e88ba;
+    margin-right: 20px;
+    padding-right: 20px;
+    display: inline-block;
+}
+
+#userContainer li a:last-child {
+    border-right: none;
+}
+
+#userContainer li a:hover {
+    color: red;
+}
+
+#userContainer li div {
+    float: right;
+}
+
+#userContainer li span {
+    border-left: 1px solid #5e88ba;
+    display: inline-block;
+    padding: 10px;
+    min-width: 100px;
+}
+
+@media only screen and (max-width: 768px) {
+    body {
+        font-size: 100%;
+    }
+    form {
+        width: 100%;
+    }
+    .form-group {
+        margin-bottom: 0;
+    }
+    label[for='username'],
+    label[for='password'],
+    label[for='confirmpassword'],
+    label[for='experience'] {
+        width: 100%;
+        display: inline-block;
+    }
+    select,
+    input[type='text'],
+    input[type='password'] {
+        width: 100%;
+    }
+    legend {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+    .form-group span {
+        margin-left: 0;
+    }
+}
