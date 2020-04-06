@@ -1,14 +1,13 @@
-'use strict';
-
+"use strict";
 
 const ALPHANUMERIC_REGEX = /^[a-zA-Z ]+$/;
 const setInvalid = (errmsg, message) => {
-        errmsg.className = "show-error";
-        errmsg.innerHTML = message;
-    }
-    /* event bindings of tab one */
-    // section one button click
-const validateUser = e => {
+    errmsg.className = "show-error";
+    errmsg.innerHTML = message;
+};
+/* event bindings of tab one */
+// section one button click
+const validateUser = (e) => {
     const username = document.forms.userForm.username.value;
     const usererr = document.getElementById("error-msg-user");
 
@@ -18,234 +17,150 @@ const validateUser = e => {
     } else if (!ALPHANUMERIC_REGEX.test(username)) {
         setInvalid(usererr, "User name must contains only letters");
         return false;
-    } else {
-        setInvalid(usererr, "");
-        return true;
     }
+    // comment 1: else is not necssary, if there is a return statement above it
+    setInvalid(usererr, "");
+    return true;
 };
 
-const validateGenders = (fldVal, errFld, fldLabel) => {
-    if (!fldVal.length > 0) {
-        setInvalid(errFld, `${fldLabel} must be selected`);
-        return false;
-    } else {
-        setInvalid(errFld, "");
-        return true;
 
-    }
-};
-
-const validateGender = e => {
+const validateGender = (e) => {
     const genders = document.getElementsByName("gender");
-    const genderChecked = Array.prototype.slice.call(genders).filter(item => item.checked);
+    const genderChecked = Array.prototype.slice
+        .call(genders)
+        .filter((item) => item.checked);
     const generr = document.getElementById("error-msg-gender");
 
-    return validateGenders(genderChecked, generr, 'Gender')
-};
-
-const validateExperiences = (fldVal, errFld, fldLabel) => {
-    if (fldVal.value == 0) {
-        setInvalid(errFld, `${fldLabel} must be selected`);
+    if (!genderChecked.length > 0) {
+        setInvalid(generr, `Gender must be selected`);
         return false;
-    } else {
-        setInvalid(errFld, "");
-        return true;
     }
+    // comment 1: else is not necssary, if there is a return statement above it
+    setInvalid(generr, "");
+    return true;
+
 };
 
-const validateExperience = e => {
+const validateExperience = (e) => {
     const experience = document.getElementById("experience");
     const experr = document.getElementById("error-msg-exp");
 
-    return validateExperiences(experience, experr, 'Experience')
-};
-
-
-const validateskills = (fldVal, errFld, fldLabel) => {
-    if (fldVal.length < 2) {
-        setInvalid(errFld, `${fldLabel} must be selected atleast 2`);
+    if (experience.value == 0) {
+        setInvalid(experr, `Experience must be selected`);
         return false;
-    } else {
-        setInvalid(errFld, "");
-        return addToDo();
     }
+    // comment 1: else is not necssary, if there is a return statement above it
+    setInvalid(experr, "");
+    return true;
 };
 
-const validateskill = e => {
-    const skillSet = document.querySelectorAll("input[name='skill']");
-    const skillerr = document.getElementById("error-msg-skill");
-    const skillChecked = Array.prototype.slice.call(skillSet).filter(item => item.checked);
-    //console.log(skillChecked.length)
-
-    return validateskills(skillChecked, skillerr, 'Skill')
-};
-
-
-const jsonObj = [];
+const users = [];
 var increment = 1;
-var elementID;
+var userId;
 
 // Add Todos
 const addToDo = () => {
-    var skillChecked = [];
-
-    const username = document.forms.userForm.username.value;
-    const genders = document.getElementsByName("gender");
-    const genderChecked = document.querySelector('input[name="gender"]:checked').value;
-    const experience = document.getElementById("experience").value;
-
-    const skillSet = document.getElementsByName("skill");
-    Array.prototype.slice.call(skillSet).filter(item => {
-        if (item.checked === true) {
-            skillChecked.push(item.value);
-        }
-        return skillChecked;
-
-    });
-
-
     var obj = {
         id: increment++,
-        user: username,
-        gender: genderChecked,
-        exp: experience,
-        skills: skillChecked // in array
+        user: document.forms.userForm.username.value,
+        gender: document.forms.myForm.gender.value,
+        exp: document.forms.myForm.experience.value,
     };
 
-    var objSkills = obj.skills.map(skill => skill); // get skill items
+    const $li = document.getElementById("liTmpl").content.cloneNode(true)
+        .firstElementChild;
+    $li.id = obj.id;
+    $li.querySelector(".user").innerHTML = obj.user;
+    $li.querySelector(".gender").innerHTML = obj.gender;
+    $li.querySelector(".exp").innerHTML = obj.exp;
 
-    const li = document.createElement('li');
-    li.innerHTML = `<span class='user'> ${obj.user} </span><span class='gender'> ${obj.gender} </span><span class='exp'> ${obj.exp} </span><span class='skill'> ${objSkills} </span> <div><a href='#' onclick='editToDo(event)'>Edit</a>  <a href='#' onclick='deleteToDO(event)'>Delete</a></div>`;
-    li.setAttribute('id', obj.id)
+    document.getElementById("userContainer").appendChild($li);
 
-    document.getElementById('userContainer').appendChild(li);
-    jsonObj.push(obj);
-    console.log(jsonObj);
+    users.push(obj);
+
     document.forms.userForm.reset();
 };
 
 // Edit Todos
 const editToDo = (event) => {
-    var gender = document.getElementsByName("gender");
-    var skill = document.getElementsByName("skill");
     event.preventDefault();
-    elementID = event.target.closest('li').id;
 
-    return jsonObj.filter((item) => {
-        if (item.id == elementID) {
-            document.forms.userForm.username.value = item.user;
-            document.getElementById("experience").value = item.exp
+    userId = event.target.closest("li").id;
+    const gender = document.getElementsByName("gender");
 
-            if (item.gender.includes('Female')) {
-                gender[0].checked = true;
-                gender[1].checked = false;
+    const user = users.find(({ id }) => id == userId);
 
-            }
-            if (item.gender.includes('Male')) {
-                gender[1].checked = true;
-                gender[0].checked = false
+    if (Object.keys(user).length) {
+        document.forms.userForm.username.value = user.user;
+        document.getElementById("experience").value = user.exp;
 
-            }
-
-            if (item.skills.includes('Javascript') &&
-                item.skills.includes('HTML5') &&
-                item.skills.includes('CSS3')) {
-                skill[0].checked = true
-                skill[1].checked = true
-                skill[2].checked = true
-            } else if (item.skills.includes('Javascript') && item.skills.includes('HTML5')) {
-                skill[0].checked = true
-                skill[1].checked = true
-            } else if (item.skills.includes('Javascript') && item.skills.includes('CSS3')) {
-                skill[0].checked = true
-                skill[2].checked = true
-            } else if (item.skills.includes('HTML5') && item.skills.includes('CSS3')) {
-                skill[1].checked = true
-                skill[2].checked = true
-            }
+        if (user.gender.includes('Female')) {
+            gender[0].checked = true;
 
         }
-
-    })
-}
-
-// Update Todos
-document
-    .getElementById("update")
-    .addEventListener("click", () => {
-
-        //updating user name
-        const parent = document.getElementById(elementID);
-        const userName = parent.querySelector('.user');
-        userName.innerHTML = document.forms.userForm.username.value;
-
-        //updating user gender
-        const userGender = parent.querySelector('.gender');
-        userGender.innerHTML = document.querySelector('input[name="gender"]:checked').value;
-
-        //updating user Exp
-        const userExp = parent.querySelector('.exp');
-        userExp.innerHTML = document.getElementById("experience").value;
-
-        //updating user skills
-        const userSkill = parent.querySelector('.skill');
-        const skillSet = document.getElementsByName("skill");
-        const elCollection = Array.prototype.slice.call(skillSet).filter(item => {
-            if (item.checked === true) {
-                return item;
-            }
-
-        });
-
-        var editedSkills = elCollection.map(it => it.value)
-        userSkill.innerHTML = editedSkills;
-        document.forms.userForm.reset();
-
-    });
-
-// Delete Todos
-const deleteToDO = event => {
-    event.preventDefault();
-    event.target.closest('li').remove();
-}
-
-// validate before submit
-const submit = e => {
-    if (validateUser()) {
-        if (validateGender()) {
-            if (validateExperience()) {
-                if (validateskill()) {
-                    console.log("submitted");
-                    document.forms.userForm.reset();
-                }
-
-            }
-
+        if (user.gender.includes('Male')) {
+            gender[1].checked = true;
 
         }
-
     }
 }
 
+// comment 2: bind event if DOM is ready
+document.addEventListener("DOMContentLoaded", () => {
+    // Update Todos
+    document
+        .getElementById("update")
+        .addEventListener("click", () => {
+            //function update() {
+            console.log('Updated!')
+                // read values
+            const username = document.forms.userForm.username.value;
+            const gender = document.forms.userForm.gender.value;
+            const experience = document.forms.userForm.experience.value;
 
-//validate username
-// document
-//     .getElementById("username")
-//     .addEventListener("focusout", validateUser);
+            // update in global object
+            const userIndex = users.findIndex(({ id }) => id == userId);
+            users[userIndex].user = username;
+            users[userIndex].gender = gender;
+            users[userIndex].experience = experience;
 
+            // update in table row
+            const $parent = document.getElementById(userId);
+            $parent.querySelector(".user").innerHTML = username;
+            $parent.querySelector(".gender").innerHTML = gender;
+            $parent.querySelector(".exp").innerHTML = experience;
 
-// document
-//     .getElementById("gender")
-//     .addEventListener("focusout", validateGender);
+            document.forms.userForm.reset();
+        });
+});
+//}
 
-// document
-//     .getElementById("experience")
-//     .addEventListener("focusout", validateExperience);
+// Delete Todos
+const deleteToDO = (event) => {
+    event.preventDefault();
+    // find index
+    const userIndex = users.findIndex(({ id }) => id == userId);
+    //remove from global users
+    users.splice(userIndex, 1);
+    // remove from DOM
+    event.target.closest("li").remove();
+};
 
-// document
-//     .getElementById("skillSet")
-//     .addEventListener("focusout", validateskill);
 
 document
     .getElementById("submit")
-    .addEventListener("click", submit);
+    .addEventListener("click", () => {
+        event.preventDefault();
+        if (validateUser()) {
+            if (validateGender()) {
+                if (validateExperience()) {
+                    //if (validateskill()) {
+                    // after proper validation add user
+                    addToDo();
+                    // reset the form
+                    document.forms.userForm.reset();
+                    //}
+                }
+            }
+        }
+    })
