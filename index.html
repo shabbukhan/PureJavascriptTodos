@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="utf-8">
@@ -50,7 +51,7 @@
 
 
             <fieldset class="form-group" id='skillSet'>
-                <legend>Skills</legend>
+                <legend>Skills:</legend>
                 <label for="javascript">Javascript</label>
                 <input id="javascript" type="checkbox" name="skill" value="Javascript" />
 
@@ -62,15 +63,15 @@
                 <span id="error-msg-skill"></span>
             </fieldset>
 
-        <div class="right">
-          <button type="button" class="btn" id="update">
+            <div class="right">
+                <button type="button" class="btn" id="update">
             UpdateToDo
           </button>
-          <button type="submit" class="btn" id="submit">
+                <button type="submit" class="btn" id="submit">
             AddToDo
           </button>
-        </div>
-      </form>
+            </div>
+        </form>
     </main>
     <ul id="userContainer"></ul>
     <template id="liTmpl">
@@ -78,6 +79,7 @@
         <span class="user"></span>
         <span class="gender"></span>
         <span class="exp"></span>
+        <span class="skill"></span>
         <div>
           <a href="#" onclick="editToDo(event)">Edit</a>
           <a href="#" onclick="deleteToDO(event)">Delete</a>
@@ -90,6 +92,7 @@
     </footer> -->
 
 
-    <script src="js/todos.js"></script>
-  </body>
+    <script src="todos.js"></script>
+</body>
+
 </html>

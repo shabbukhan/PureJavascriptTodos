@@ -26,8 +26,7 @@ const validateUser = (e) => {
 
 const validateGender = (e) => {
     const genders = document.getElementsByName("gender");
-    const genderChecked = Array.prototype.slice
-        .call(genders)
+    const genderChecked = Array.from(genders)
         .filter((item) => item.checked);
     const generr = document.getElementById("error-msg-gender");
 
@@ -54,18 +53,45 @@ const validateExperience = (e) => {
     return true;
 };
 
+
+const validateskill = e => {
+    const skillSet = document.querySelectorAll("input[name='skill']");
+    const skillerr = document.getElementById("error-msg-skill");
+    const skillChecked = Array.from(skillSet).filter(item => item.checked);
+
+    if (skillChecked.length < 2) {
+        setInvalid(skillerr, `Skills must be selected atleast 2`);
+        return false;
+    } else {
+        setInvalid(skillerr, "");
+        return true;
+    }
+};
+
 const users = [];
 var increment = 1;
 var userId;
 
+
 // Add Todos
 const addToDo = () => {
+    var skillChecked = [];
     var obj = {
         id: increment++,
         user: document.forms.userForm.username.value,
         gender: document.forms.myForm.gender.value,
         exp: document.forms.myForm.experience.value,
+        skill: skillChecked // array element
     };
+
+    const skillSet = document.getElementsByName("skill");
+    Array.from(skillSet).filter(item => {
+        if (item.checked === true) {
+            skillChecked.push(item.value);
+        }
+        return skillChecked;
+
+    });
 
     const $li = document.getElementById("liTmpl").content.cloneNode(true)
         .firstElementChild;
@@ -73,6 +99,7 @@ const addToDo = () => {
     $li.querySelector(".user").innerHTML = obj.user;
     $li.querySelector(".gender").innerHTML = obj.gender;
     $li.querySelector(".exp").innerHTML = obj.exp;
+    $li.querySelector(".skill").innerHTML = obj.skill;
 
     document.getElementById("userContainer").appendChild($li);
 
@@ -87,6 +114,7 @@ const editToDo = (event) => {
 
     userId = event.target.closest("li").id;
     const gender = document.getElementsByName("gender");
+    const skill = document.getElementsByName("skill");
 
     const user = users.find(({ id }) => id == userId);
 
@@ -102,6 +130,12 @@ const editToDo = (event) => {
             gender[1].checked = true;
 
         }
+        user.skill.map(i => {
+            i === 'Javascript' ? skill[0].checked = true :
+                i === 'HTML5' ? skill[1].checked = true :
+                i === 'CSS3' ? skill[2].checked = true : null
+        });
+
     }
 }
 
@@ -112,23 +146,34 @@ document.addEventListener("DOMContentLoaded", () => {
         .getElementById("update")
         .addEventListener("click", () => {
             //function update() {
-            console.log('Updated!')
-                // read values
+            console.log('Updated!');
+            //skillChecked = [];
+            // read values
             const username = document.forms.userForm.username.value;
             const gender = document.forms.userForm.gender.value;
             const experience = document.forms.userForm.experience.value;
+            const skillSet = document.getElementsByName("skill");
+            const skillChecked = Array.from(skillSet).filter(item => {
+                if (item.checked === true) {
+                    return item;
+                }
+
+            });
+
+
 
             // update in global object
             const userIndex = users.findIndex(({ id }) => id == userId);
             users[userIndex].user = username;
             users[userIndex].gender = gender;
             users[userIndex].experience = experience;
-
+            users[userIndex].skill = skillChecked;
             // update in table row
             const $parent = document.getElementById(userId);
-            $parent.querySelector(".user").innerHTML = username;
+            $parent.querySelector(".user").innerHTML = users[userIndex].user; // can put from json
             $parent.querySelector(".gender").innerHTML = gender;
             $parent.querySelector(".exp").innerHTML = experience;
+            $parent.querySelector(".skill").innerHTML = skillChecked.map(item => item.value);
 
             document.forms.userForm.reset();
         });
@@ -154,12 +199,12 @@ document
         if (validateUser()) {
             if (validateGender()) {
                 if (validateExperience()) {
-                    //if (validateskill()) {
-                    // after proper validation add user
-                    addToDo();
-                    // reset the form
-                    document.forms.userForm.reset();
-                    //}
+                    if (validateskill()) {
+                        // after proper validation add user
+                        addToDo();
+                        // reset the form
+                        document.forms.userForm.reset();
+                    }
                 }
             }
         }
